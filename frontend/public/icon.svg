@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="cyberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6" />
+      <stop offset="50%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#06B6D4" />
+    </linearGradient>
+    <radialGradient id="glowGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#080C14" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="110" fill="#080C14" />
+  <circle cx="256" cy="256" r="210" fill="url(#glowGrad)" />
+  <rect x="24" y="24" width="464" height="464" rx="90" fill="none" stroke="url(#cyberGrad)" stroke-width="8" stroke-opacity="0.5" />
+  <!-- Brain / Spark Circuit Icon -->
+  <path d="M256 96 L290 198 A32 32 0 0 0 314 222 L416 256 L314 290 A32 32 0 0 0 290 314 L256 416 L222 314 A32 32 0 0 0 198 290 L96 256 L198 222 A32 32 0 0 0 222 198 Z" fill="url(#cyberGrad)" />
+  <circle cx="256" cy="256" r="32" fill="#080C14" stroke="#22D3EE" stroke-width="6" />
+</svg>
