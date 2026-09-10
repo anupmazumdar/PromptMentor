@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String          @id @default(uuid())
+  email          String          @unique
+  passwordHash   String
+  name           String?
+  role           String          @default("STUDENT")
+  currentLevel   String          @default("BASICS")
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  refreshTokens  RefreshToken[]
+  progress       Progress[]
+  promptAttempts PromptAttempt[]
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Module {
+  id          String   @id @default(uuid())
+  level       String   // "BASICS" | "INTERMEDIATE" | "ADVANCED"
+  title       String
+  description String
+  orderIndex  Int
+  createdAt   DateTime @default(now())
+
+  lessons     Lesson[]
+}
+
+model Lesson {
+  id             String          @id @default(uuid())
+  moduleId       String
+  module         Module          @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  title          String
+  slug           String          @unique
+  summary        String
+  content        String          @db.Text
+  practiceGoal   String
+  practicePrompt String          @db.Text
+  orderIndex     Int
+  createdAt      DateTime        @default(now())
+
+  quizQuestions  QuizQuestion[]
+  progress       Progress[]
+  promptAttempts PromptAttempt[]
+}
+
+model QuizQuestion {
+  id           String @id @default(uuid())
+  lessonId     String
+  lesson       Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  question     String
+  options      String // JSON string array of choices
+  correctIndex Int
+  explanation  String
+}
+
+model Progress {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId    String
+  lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  status      String    @default("LOCKED") // "LOCKED" | "IN_PROGRESS" | "COMPLETED"
+  quizPassed  Boolean   @default(false)
+  quizScore   Int       @default(0)
+  completedAt DateTime?
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, lessonId])
+}
+
+model PromptAttempt {
+  id               String   @id @default(uuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId         String?
+  lesson           Lesson?  @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+  level            String
+  taskTitle        String
+  studentPrompt    String   @db.Text
+  systemPromptUsed String   @db.Text
+  aiCritique       String   @db.Text
+  score            Int      @default(0)
+  createdAt        DateTime @default(now())
+}
