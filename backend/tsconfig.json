@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "lib": ["ES2022"],
+    "rootDir": "../",
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "typeRoots": ["./node_modules/@types"],
+    "paths": {
+      "*": ["node_modules/*", "./node_modules/*"]
+    }
+  },
+  "include": [
+    "src/**/*",
+    "../auth/**/*",
+    "../security/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "../frontend"
+  ]
+}
