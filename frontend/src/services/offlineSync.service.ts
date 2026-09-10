@@ -1,7 +1,7 @@
 import { offlineDb, CachedModule, CachedLesson, QueuedQuiz, QueuedSandbox } from '../db/offlineDb';
 import { ModuleData, LessonDetail } from '../types';
 import { submitQuizApi } from './progress.service';
-import { critiquePromptApi } from './tutor.service';
+import { critiquePromptApi, askTutorApi } from './tutor.service';
 
 type SyncListener = (isOnline: boolean, pendingCount: number) => void;
 const listeners: Set<SyncListener> = new Set();
@@ -291,6 +291,27 @@ export async function syncPendingActions(): Promise<void> {
     }
   } catch (err) {
     console.warn('Error during sandbox sync:', err);
+  }
+
+  // 3. Sync Chat queries
+  try {
+    const pendingChat = await offlineDb.queuedChat.where('synced').equals(0).toArray();
+    for (const c of pendingChat) {
+      if (!c.id) continue;
+      try {
+        await askTutorApi({
+          query: c.query,
+          level: c.level,
+          topic: c.topic
+        });
+        await offlineDb.queuedChat.update(c.id, { synced: true });
+        console.log(`✅ Synced offline chat query: "${c.query.slice(0, 30)}..."`);
+      } catch (syncErr) {
+        console.warn(`Failed to sync chat query "${c.query.slice(0, 30)}...":`, syncErr);
+      }
+    }
+  } catch (err) {
+    console.warn('Error during chat sync:', err);
   }
 
   notifyListeners();

@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { BrainCircuit, Lock, Mail, ArrowRight, Eye, EyeOff, Sparkles, AlertCircle } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
-  const { login } = useAuth();
+  const { login, demoLogin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -35,9 +35,17 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const fillDemoAccount = () => {
-    setEmail('student@promptmentor.ai');
-    setPassword('StudentDemo!2026');
+  const handleDemoLogin = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await demoLogin();
+      navigate(from, { replace: true });
+    } catch (err: any) {
+      setError(err.message || 'Failed to sign in with demo account.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -123,14 +131,15 @@ export const LoginPage: React.FC = () => {
             </button>
           </form>
 
-          {/* Quick Demo Fill */}
+          {/* Quick Demo Action */}
           <div className="mt-5 pt-5 border-t border-slate-800 text-center">
             <button
               type="button"
-              onClick={fillDemoAccount}
-              className="text-xs text-violet-400 hover:text-violet-300 font-medium inline-flex items-center gap-1"
+              onClick={handleDemoLogin}
+              disabled={isLoading}
+              className="text-xs text-violet-400 hover:text-violet-300 font-medium inline-flex items-center gap-1.5 transition-colors disabled:opacity-50"
             >
-              <Sparkles className="w-3.5 h-3.5" /> Fill Student Demo
+              <Sparkles className="w-3.5 h-3.5" /> Continue as Guest / Demo
             </button>
           </div>
         </div>

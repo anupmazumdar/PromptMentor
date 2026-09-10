@@ -87,6 +87,9 @@ export async function register(req: Request, res: Response): Promise<void> {
   }
 }
 
+// Precomputed bcrypt dummy hash for constant-time email enumeration mitigation (Task 3)
+const DUMMY_BCRYPT_HASH = '$2b$10$MuIIy13ulo242ehy4RMntO0tfGfaG8O8gUjhr7IXXwb/9HOMYFNLW';
+
 export async function login(req: Request, res: Response): Promise<void> {
   try {
     const { email, password } = req.body;
@@ -104,6 +107,8 @@ export async function login(req: Request, res: Response): Promise<void> {
     }
 
     if (!user) {
+      // Execute bcrypt compare against dummy hash to ensure constant response time
+      await comparePassword(password, DUMMY_BCRYPT_HASH);
       res.status(401).json({ success: false, error: 'Invalid email or password.' });
       return;
     }
@@ -214,5 +219,79 @@ export async function getMe(req: Request, res: Response): Promise<void> {
     res.status(200).json({ success: true, data: user });
   } catch (err: any) {
     res.status(500).json({ success: false, error: 'Failed to fetch user profile.' });
+  }
+}
+
+export async function demoLogin(req: Request, res: Response): Promise<void> {
+  try {
+    const demoEmail = 'student@promptmentor.ai';
+    let user: { id: string; email: string; name: string | null; role: string; currentLevel: string } | null = null;
+
+    if (isDbConnected && prisma) {
+      let dbUser = await prisma.user.findUnique({ where: { email: demoEmail } });
+      if (!dbUser) {
+        dbUser = await prisma.user.create({
+          data: {
+            email: demoEmail,
+            passwordHash: '$2b$10$5uDSuScnyffgu6oB8/Y8q.ur1M04LJUkmDghVoiOznj57tYTZhoVy',
+            name: 'Demo Student',
+            role: 'STUDENT',
+            currentLevel: 'BASICS'
+          }
+        });
+      }
+      user = {
+        id: dbUser.id,
+        email: dbUser.email,
+        name: dbUser.name,
+        role: dbUser.role,
+        currentLevel: dbUser.currentLevel
+      };
+    } else {
+      let memUser = memoryStore.users.get(demoEmail);
+      if (!memUser) {
+        memUser = {
+          id: 'user_student_demo',
+          email: demoEmail,
+          passwordHash: '$2b$10$5uDSuScnyffgu6oB8/Y8q.ur1M04LJUkmDghVoiOznj57tYTZhoVy',
+          name: 'Demo Student',
+          role: 'STUDENT',
+          currentLevel: 'BASICS',
+          createdAt: new Date()
+        };
+        memoryStore.users.set(demoEmail, memUser);
+      }
+      user = {
+        id: memUser.id,
+        email: memUser.email,
+        name: memUser.name,
+        role: memUser.role,
+        currentLevel: memUser.currentLevel
+      };
+    }
+
+    const tokenPayload: TokenPayload = {
+      userId: user.id,
+      email: user.email,
+      role: user.role
+    };
+
+    const accessToken = generateAccessToken(tokenPayload);
+    const refreshToken = generateRefreshToken(tokenPayload);
+
+    await storeRefreshToken(user.id, refreshToken);
+
+    res.status(200).json({
+      success: true,
+      message: 'Demo login successful.',
+      data: {
+        user,
+        accessToken,
+        refreshToken
+      }
+    });
+  } catch (err: any) {
+    console.error('Demo login error:', err);
+    res.status(500).json({ success: false, error: 'Failed to authenticate demo account.' });
   }
 }

@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User } from '../types';
-import { loginApi, registerApi, logoutApi, getProfileApi } from '../services/auth.service';
+import { loginApi, registerApi, logoutApi, getProfileApi, demoLoginApi } from '../services/auth.service';
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  demoLogin: () => Promise<void>;
   register: (email: string, password: string, name?: string) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -57,6 +58,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(data.user);
   };
 
+  const demoLogin = async () => {
+    const data = await demoLoginApi();
+    localStorage.setItem('pm_access_token', data.accessToken);
+    localStorage.setItem('pm_refresh_token', data.refreshToken);
+    localStorage.setItem('pm_user', JSON.stringify(data.user));
+    setUser(data.user);
+  };
+
   const register = async (email: string, password: string, name?: string) => {
     const data = await registerApi(email, password, name);
     localStorage.setItem('pm_access_token', data.accessToken);
@@ -81,6 +90,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthenticated: !!user,
         isLoading,
         login,
+        demoLogin,
         register,
         logout
       }}
