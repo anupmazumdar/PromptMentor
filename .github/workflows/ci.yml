@@ -1,0 +1,49 @@
+name: CI/CD Quality Gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-and-build:
+    name: Build & Typecheck (Strict)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Root Dependencies
+        run: npm ci || npm install
+
+      - name: Setup Database & Generate Prisma Client
+        run: |
+          cd database
+          npm ci || npm install
+          npx prisma generate
+
+      - name: Build & Validate Backend
+        run: |
+          cd backend
+          npm ci || npm install
+          npm run build
+
+      - name: Build & Validate Frontend (PWA)
+        run: |
+          cd frontend
+          npm ci || npm install
+          npm run build
+        env:
+          VITE_API_URL: https://promptmentor-backend.onrender.com

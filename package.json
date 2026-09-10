@@ -1,0 +1,35 @@
+{
+  "name": "promptmentor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PromptMentor - AI Prompt Engineering Tutor Web App",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "db:generate": "cd database && npx prisma generate",
+    "db:push": "cd database && npx prisma db push",
+    "db:seed": "cd database && npx tsx seed/seed.ts"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^22.20.2",
+    "concurrently": "^9.1.2"
+  },
+  "keywords": [
+    "prompt-engineering",
+    "ai-tutor",
+    "openrouter",
+    "prisma",
+    "react",
+    "tailwind"
+  ],
+  "author": "PromptMentor Team",
+  "license": "MIT"
+}
