@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 
 // Load environment variables from backend/.env or root .env
@@ -49,7 +49,7 @@ app.use('/api/tutor', tutorRoutes);
 app.use('/api/progress', progressRoutes);
 
 // 404 handler
-app.use((req, res) => {
+app.use((req: Request, res: Response) => {
   res.status(404).json({ success: false, error: `Route not found: ${req.method} ${req.path}` });
 });
 

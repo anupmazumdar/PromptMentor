@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { curriculumData } from '../../../database/seed/seed';
+import { curriculumData } from '../../../database/seed/curriculumData';
 
 declare global {
   // eslint-disable-next-line no-var
