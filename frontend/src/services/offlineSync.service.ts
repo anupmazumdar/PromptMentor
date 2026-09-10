@@ -81,7 +81,7 @@ export async function cacheCurriculumLocally(modules: ModuleData[]): Promise<voi
           level: mod.level,
           title: lesson.title,
           summary: lesson.summary,
-          content: existing?.content || lesson.summary,
+          content: existing?.content || '',
           practiceGoal: lesson.practiceGoal,
           practicePrompt: existing?.practicePrompt || '',
           orderIndex: lesson.orderIndex,

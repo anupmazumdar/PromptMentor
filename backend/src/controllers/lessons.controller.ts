@@ -19,7 +19,7 @@ export async function getCurriculum(req: Request, res: Response): Promise<void> 
               summary: true,
               orderIndex: true,
               practiceGoal: true,
-              progress: userId ? { where: { userId } } : false
+              progress: (userId && !userId.startsWith('guest_')) ? { where: { userId } } : false
             }
           }
         }
@@ -34,7 +34,11 @@ export async function getCurriculum(req: Request, res: Response): Promise<void> 
           description: mod.description,
           orderIndex: mod.orderIndex,
           lessons: mod.lessons.map((lesson: any) => {
-            const userProg = lesson.progress?.[0];
+            let userProg = lesson.progress?.[0];
+            if (userId?.startsWith('guest_')) {
+              const memProg = memoryStore.progress.get(`${userId}:${lesson.slug}`);
+              if (memProg) userProg = memProg;
+            }
             return {
               id: lesson.id,
               title: lesson.title,
@@ -111,12 +115,10 @@ export async function getLessonBySlug(req: Request, res: Response): Promise<void
             select: {
               id: true,
               question: true,
-              options: true,
-              explanation: true,
-              correctIndex: true
+              options: true
             }
           },
-          progress: userId ? { where: { userId } } : false
+          progress: (userId && !userId.startsWith('guest_')) ? { where: { userId } } : false
         }
       });
 
@@ -125,7 +127,11 @@ export async function getLessonBySlug(req: Request, res: Response): Promise<void
         return;
       }
 
-      const userProg = lesson.progress?.[0];
+      let userProg = lesson.progress?.[0];
+      if (userId?.startsWith('guest_')) {
+        const memProg = memoryStore.progress.get(`${userId}:${slug}`);
+        if (memProg) userProg = memProg as any;
+      }
 
       res.status(200).json({
         success: true,
@@ -146,9 +152,7 @@ export async function getLessonBySlug(req: Request, res: Response): Promise<void
           quizQuestions: lesson.quizQuestions.map((q: any) => ({
             id: q.id,
             question: q.question,
-            options: typeof q.options === 'string' ? JSON.parse(q.options) : q.options,
-            correctIndex: q.correctIndex,
-            explanation: q.explanation
+            options: typeof q.options === 'string' ? JSON.parse(q.options) : q.options
           }))
         }
       });
@@ -205,9 +209,7 @@ export async function getLessonBySlug(req: Request, res: Response): Promise<void
         quizQuestions: targetLesson.quizQuestions.map((q: any, idx: number) => ({
           id: `q-${idx}`,
           question: q.question,
-          options: q.options,
-          correctIndex: q.correctIndex,
-          explanation: q.explanation
+          options: q.options
         }))
       }
     });

@@ -13,7 +13,7 @@ export interface QuizSubmissionResult {
     questionId: string;
     isCorrect: boolean;
     correctIndex: number;
-    explanation: string;
+    explanation?: string;
   }[];
 }
 
@@ -82,7 +82,7 @@ export async function submitQuizApi(lessonSlug: string, answers: number[]): Prom
       questionId: q.id || `q-${idx}`,
       isCorrect,
       correctIndex: q.correctIndex ?? 0,
-      explanation: q.explanation
+      explanation: q.explanation || ''
     };
   });
 

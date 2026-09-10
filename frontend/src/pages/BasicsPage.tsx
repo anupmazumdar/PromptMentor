@@ -203,9 +203,16 @@ export const BasicsPage: React.FC = () => {
                 </div>
 
                 {/* Markdown Content */}
-                <div className="prose prose-invert prose-emerald max-w-none text-slate-200 text-sm leading-relaxed space-y-4">
-                  <ReactMarkdown>{lessonDetail.content}</ReactMarkdown>
-                </div>
+                {lessonDetail.content ? (
+                  <div className="prose prose-invert prose-emerald max-w-none text-slate-200 text-sm leading-relaxed space-y-4">
+                    <ReactMarkdown>{lessonDetail.content}</ReactMarkdown>
+                  </div>
+                ) : (
+                  <div className="p-6 rounded-xl bg-slate-900/60 border border-slate-800 text-center space-y-2 my-4">
+                    <p className="text-sm font-medium text-amber-300">Full lesson not downloaded yet — open it once while online</p>
+                    <p className="text-xs text-slate-400">This lesson's full interactive content and quiz will be saved for offline use once viewed online.</p>
+                  </div>
+                )}
 
                 {/* Practice Sandbox Goal Box */}
                 <div className="p-4 rounded-xl bg-slate-950/70 border border-emerald-500/30 space-y-2.5">

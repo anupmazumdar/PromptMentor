@@ -15,7 +15,7 @@ const memoryRefreshTokens = new Map<string, StoredToken>();
 export async function storeRefreshToken(userId: string, token: string): Promise<void> {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
 
-  if (isDbConnected && prisma) {
+  if (isDbConnected && prisma && !userId.startsWith('guest_')) {
     try {
       await prisma.refreshToken.create({
         data: {
@@ -70,7 +70,8 @@ export async function rotateRefreshToken(oldToken: string): Promise<{ accessToke
         data: { revoked: true }
       });
     } catch (err) {
-      console.warn('⚠️ DB error during token rotation, falling back to memory store:', err);
+      console.warn('⚠️ DB error during token rotation, rejecting token:', err);
+      return null;
     }
   } else {
     const stored = memoryRefreshTokens.get(oldToken);

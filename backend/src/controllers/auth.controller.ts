@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import crypto from 'crypto';
 import { hashPassword, comparePassword } from '../../../auth/passwordHash.util';
 import { generateAccessToken, generateRefreshToken, TokenPayload } from '../../../auth/jwt.strategy';
 import { storeRefreshToken, rotateRefreshToken, revokeRefreshToken } from '../../../auth/refreshToken.service';
@@ -197,7 +198,7 @@ export async function getMe(req: Request, res: Response): Promise<void> {
     }
 
     let user: any = null;
-    if (isDbConnected && prisma) {
+    if (isDbConnected && prisma && !userId.startsWith('guest_')) {
       user = await prisma.user.findUnique({
         where: { id: userId },
         select: { id: true, email: true, name: true, role: true, currentLevel: true, createdAt: true }
@@ -222,53 +223,53 @@ export async function getMe(req: Request, res: Response): Promise<void> {
   }
 }
 
+/**
+ * Purge expired guest sessions, progress, and attempts older than 24 hours.
+ */
+export function cleanupExpiredGuests(): void {
+  const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+  for (const [email, u] of memoryStore.users.entries()) {
+    if (u.id.startsWith('guest_') && u.createdAt.getTime() < cutoff) {
+      memoryStore.users.delete(email);
+    }
+  }
+  for (const [key, p] of memoryStore.progress.entries()) {
+    if (key.startsWith('guest_') && p.completedAt && p.completedAt.getTime() < cutoff) {
+      memoryStore.progress.delete(key);
+    }
+  }
+  memoryStore.attempts = memoryStore.attempts.filter(
+    (a) => !(a.userId.startsWith('guest_') && a.createdAt.getTime() < cutoff)
+  );
+}
+
 export async function demoLogin(req: Request, res: Response): Promise<void> {
   try {
-    const demoEmail = 'student@promptmentor.ai';
-    let user: { id: string; email: string; name: string | null; role: string; currentLevel: string } | null = null;
+    cleanupExpiredGuests();
 
-    if (isDbConnected && prisma) {
-      let dbUser = await prisma.user.findUnique({ where: { email: demoEmail } });
-      if (!dbUser) {
-        dbUser = await prisma.user.create({
-          data: {
-            email: demoEmail,
-            passwordHash: '$2b$10$5uDSuScnyffgu6oB8/Y8q.ur1M04LJUkmDghVoiOznj57tYTZhoVy',
-            name: 'Demo Student',
-            role: 'STUDENT',
-            currentLevel: 'BASICS'
-          }
-        });
-      }
-      user = {
-        id: dbUser.id,
-        email: dbUser.email,
-        name: dbUser.name,
-        role: dbUser.role,
-        currentLevel: dbUser.currentLevel
-      };
-    } else {
-      let memUser = memoryStore.users.get(demoEmail);
-      if (!memUser) {
-        memUser = {
-          id: 'user_student_demo',
-          email: demoEmail,
-          passwordHash: '$2b$10$5uDSuScnyffgu6oB8/Y8q.ur1M04LJUkmDghVoiOznj57tYTZhoVy',
-          name: 'Demo Student',
-          role: 'STUDENT',
-          currentLevel: 'BASICS',
-          createdAt: new Date()
-        };
-        memoryStore.users.set(demoEmail, memUser);
-      }
-      user = {
-        id: memUser.id,
-        email: memUser.email,
-        name: memUser.name,
-        role: memUser.role,
-        currentLevel: memUser.currentLevel
-      };
-    }
+    const guestSuffix = crypto.randomUUID().slice(0, 8);
+    const guestId = `guest_${guestSuffix}_${Date.now().toString(36)}`;
+    const guestEmail = `${guestId}@promptmentor.demo`;
+
+    const guestUser: MemoryUser = {
+      id: guestId,
+      email: guestEmail,
+      passwordHash: '', // guest accounts cannot be accessed via login form
+      name: `Guest Student (${guestSuffix})`,
+      role: 'STUDENT',
+      currentLevel: 'BASICS',
+      createdAt: new Date()
+    };
+
+    memoryStore.users.set(guestEmail, guestUser);
+
+    const user = {
+      id: guestUser.id,
+      email: guestUser.email,
+      name: guestUser.name,
+      role: guestUser.role,
+      currentLevel: guestUser.currentLevel
+    };
 
     const tokenPayload: TokenPayload = {
       userId: user.id,

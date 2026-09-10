@@ -20,7 +20,7 @@ export interface QuizQuestion {
   question: string;
   options: string[];
   correctIndex?: number; // only returned after submission or for evaluation
-  explanation: string;
+  explanation?: string;
 }
 
 export interface LessonSummary {

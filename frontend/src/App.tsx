@@ -9,11 +9,41 @@ import { AdvancedPage } from './pages/AdvancedPage';
 import { SandboxPage } from './pages/SandboxPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
-import { BrainCircuit, Heart, ExternalLink } from 'lucide-react';
+import { BrainCircuit, Heart, ExternalLink, AlertCircle } from 'lucide-react';
 
 export const App: React.FC = () => {
+  const [isMemoryFallback, setIsMemoryFallback] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    const checkDbStatus = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || '';
+        const res = await fetch(`${apiUrl}/api/health`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.database === 'memory-fallback-mode') {
+            setIsMemoryFallback(true);
+          }
+        }
+      } catch (_) {
+        // Ignore errors if network is down
+      }
+    };
+    checkDbStatus();
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col bg-[#080C14] text-slate-100 selection:bg-violet-600 selection:text-white">
+      {/* Ephemeral Memory Storage Banner */}
+      {isMemoryFallback && (
+        <div className="bg-amber-950/80 border-b border-amber-800/70 px-4 py-1.5 text-center text-xs text-amber-200 flex items-center justify-center gap-2">
+          <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+          <span>
+            <strong>Demo Notice:</strong> Server is running in memory fallback mode (no PostgreSQL database connected). Accounts and progress will not persist across restarts.
+          </span>
+        </div>
+      )}
+
       {/* Sticky Top Navigation */}
       <Navbar />
 

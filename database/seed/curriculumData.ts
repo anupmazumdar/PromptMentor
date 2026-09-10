@@ -38,18 +38,24 @@ export const curriculumData: SeedModule[] = [
         summary: 'Understand text chunking into sub-word tokens, context windows, and probability prediction.',
         orderIndex: 1,
         content: `### Understanding the Token Machine
-Large Language Models (LLMs) do not read words like humans. Instead, they digest text as **tokens**—chunks of characters typically ~4 characters or 0.75 words in English.
+When you talk to an AI, think of it as a superfast autocomplete engine that chops your sentences into small puzzle pieces—like syllables or clusters of characters—so it can guess which piece should come next.
+
+Large Language Models (LLMs) do not read whole words or understand concepts like humans. Instead, they digest text as **tokens**—chunks of characters typically ~4 characters or 0.75 words in English.
 
 #### Key Mechanics:
 1. **Next-Token Prediction**: The model calculates probability distributions over vocabulary tokens given preceding context.
 2. **Context Window**: The maximum number of tokens (input + output) a model can hold in attention at once.
 3. **Deterministic vs Stochastic**: The model is fundamentally statistical. Small changes in punctuation, spacing, or phrasing can shift predicted token probabilities.
 
-#### Bad vs. Good Prompting:
+#### Example 1: General Knowledge (Bad vs. Good)
 * **Bad**: \`Tell me about dogs.\` *(Vague, unconstrained token generation)*
 * **Good**: \`Explain the working dog breed classification in 3 bullet points, under 100 words.\` *(Constrained, specific token distribution target)*
 
-> **Rule of Thumb**: Think of the LLM as an autocomplete engine with vast encyclopedic recall. Your prompt is the steering wheel.`,
+#### Example 2: Everyday Cooking (Bad vs. Good)
+* **Bad**: \`Give me dinner ideas.\` *(AI guesses wildly across cuisines, dietary restrictions, and prep times)*
+* **Good**: \`Suggest a 20-minute weeknight dinner recipe for 2 using chicken breast and spinach. List ingredients first, then 4 numbered cooking steps.\` *(Steers the token generation to practical, actionable recipe steps)*
+
+> **Why This Matters**: Because the AI predicts word-by-word based on statistical likelihood, giving it clear boundaries and specific keywords immediately narrows down millions of random possibilities into the exact answer you need.`,
         practiceGoal: 'Write a prompt that requests a 3-bullet summary of how solar panels convert sunlight into electricity, constrained to under 80 words.',
         practicePrompt: 'Explain how solar panels work in 3 bullet points. Keep the total explanation under 80 words and use clear, accessible language.',
         quizQuestions: [
@@ -78,10 +84,12 @@ Large Language Models (LLMs) do not read words like humans. Instead, they digest
         summary: 'Learn when to prompt without examples and when to provide exemplar pairs for consistent style and accuracy.',
         orderIndex: 2,
         content: `### Zero-Shot vs Few-Shot
+Think of prompting like giving directions to a new coworker: "zero-shot" means asking them to do a task without showing any finished samples, while "few-shot" means showing them two or three completed examples first so they know the exact format and style you want.
+
 - **Zero-Shot**: Giving the model a task instruction with zero demonstrations. Ideal for straightforward reasoning, summarization, or translation.
 - **Few-Shot (In-Context Learning)**: Supplying 1 to 5 input-output examples before the target query. This guides formatting, tone, classification labels, and reasoning paths without weight fine-tuning.
 
-#### Exemplar Pattern:
+#### Example 1: Customer Sentiment Classification
 \`\`\`text
 Input: "The battery lasts only 2 hours." -> Sentiment: Negative
 Input: "Arrived in pristine condition." -> Sentiment: Positive
@@ -89,7 +97,23 @@ Input: "It works as expected, nothing extraordinary." -> Sentiment: Neutral
 Input: "Customer support resolved my ticket in 5 minutes!" -> Sentiment:
 \`\`\`
 
-> **Pro Tip**: Keep few-shot exemplars balanced (equal distribution of classes) and uniform in format to avoid frequency bias.`,
+#### Example 2: Travel Itinerary Summaries
+\`\`\`text
+Turn raw flight notes into clean calendar entries.
+
+Example 1:
+Notes: "Flight UA240 departing SFO 8:15 AM arriving ORD 2:30 PM terminal 1"
+Entry: "Flight: SFO -> ORD | Dep: 08:15 | Arr: 14:30 | Term: 1"
+
+Example 2:
+Notes: "Flight DL88 departing JFK 6:00 PM arriving LHR 6:20 AM terminal 4"
+Entry: "Flight: JFK -> LHR | Dep: 18:00 | Arr: 06:20 (+1) | Term: 4"
+
+Notes: "Flight BA112 departing SEA 1:15 PM arriving LHR 7:00 AM terminal 5"
+Entry:
+\`\`\`
+
+> **Why This Matters**: Showing even two quick examples eliminates guesswork and prevents the AI from giving you long-winded paragraphs when you just wanted a quick, consistent format.`,
         practiceGoal: 'Write a few-shot prompt that converts informal slang tweets into formal professional emails using 2 examples.',
         practicePrompt: `Convert informal text into polite professional emails.
 
@@ -123,14 +147,22 @@ Formal:`,
         summary: 'Direct tone, expertise depth, and vocabulary by assigning authoritative persona instructions.',
         orderIndex: 3,
         content: `### The Power of Role Conditioning
+Before you ask a question, telling the AI who to act like is like giving an actor a script—it instantly puts the model into character with the right vocabulary, tone, and level of detail.
+
 Assigning a persona primes the LLM's attention toward specific domains of its training corpus.
 
 #### Why it Works:
 When you state: *"You are an experienced cybersecurity penetration tester with 15 years in financial compliance,"* you bias token predictions toward technical rigor, industry standards (OWASP, NIST), and defensive terminology.
 
-#### Bad vs. Good:
+#### Example 1: Code Review (Bad vs. Good)
 * **Bad**: \`Check this Python code for bugs.\`
-* **Good**: \`You are a Senior Python Security Auditor. Review the following code snippet for OWASP Top 10 vulnerabilities. Identify risk severity (High/Med/Low) and provide remediation patches.\``,
+* **Good**: \`You are a Senior Python Security Auditor. Review the following code snippet for OWASP Top 10 vulnerabilities. Identify risk severity (High/Med/Low) and provide remediation patches.\`
+
+#### Example 2: High School Essay Coaching (Bad vs. Good)
+* **Bad**: \`Read this history essay and tell me what you think.\` *(Yields generic praise or robotic grammar corrections)*
+* **Good**: \`You are an encouraging 10th-grade AP History teacher. Review this opening paragraph on the American Revolution. Highlight the strength of the thesis statement and point out two specific places where stronger primary evidence would boost the argument.\` *(Yields constructive, pedagogical feedback tailored to high school expectations)*
+
+> **Why This Matters**: Giving the AI a specific role stops it from sounding like a bland encyclopedia and ensures it speaks at the exact depth, tone, and perspective you need.`,
         practiceGoal: 'Craft a prompt assigning a persona of an elite Michelin-star pastry chef explaining why a soufflé collapses.',
         practicePrompt: 'You are a Michelin-star pastry chef and culinary instructor. Explain to an apprentice why their chocolate soufflé collapsed upon leaving the oven. Identify the top 2 chemical mistakes and provide the exact oven and folding corrections.',
         quizQuestions: [
@@ -153,14 +185,22 @@ When you state: *"You are an experienced cybersecurity penetration tester with 1
         summary: 'Eliminate ambiguity by anchoring audience, purpose, constraints, and background context.',
         orderIndex: 4,
         content: `### The 4 Pillars of Clear Prompts
+An AI cannot read your mind or see what's happening around you, so treat your prompt like sending an email to a helpful assistant who has never visited your office before.
+
 1. **Audience**: Who will read this? (e.g., C-suite executives, 8th graders, junior frontend devs).
 2. **Context**: Why is this needed? What background info applies?
 3. **Objective**: What is the singular goal?
 4. **Constraints**: Length limits, forbidden words, required sections.
 
-#### The Anti-Vague Formula:
+#### Example 1: Product Announcement (The Anti-Vague Formula)
 Instead of *"Write a marketing post for our app,"* use:
-> "Write a 120-word LinkedIn announcement launching our AI note-taking app for remote product managers. Emphasize saving 4 hours per sprint. Tone: punchy, professional. Avoid corporate buzzwords like 'synergy'."`,
+> "Write a 120-word LinkedIn announcement launching our AI note-taking app for remote product managers. Emphasize saving 4 hours per sprint. Tone: punchy, professional. Avoid corporate buzzwords like 'synergy'."
+
+#### Example 2: At-Home Fitness Routine (Bad vs. Good)
+* **Bad**: \`Make me a workout plan.\` *(Could be a 2-hour bodybuilder split or marathon training)*
+* **Good**: \`Create a 3-day full-body workout routine for a beginner who works from home, has 30 minutes per session, and only owns a pair of 15 lb dumbbells. Include a 3-minute warm-up and skip any jumping exercises due to a bad knee.\` *(Pins down equipment, time, experience, and physical constraints)*
+
+> **Why This Matters**: Adding just two sentences of real-world context (your goal, your constraints, and who it's for) cuts out 90% of generic AI fluff and saves you from having to ask five follow-up questions.`,
         practiceGoal: 'Write a highly specific prompt instructing an AI to draft a 100-word product launch announcement with clear constraints.',
         practicePrompt: 'Task: Write a 100-word Slack announcement for an internal engineering team about migrating to PostgreSQL 16. Audience: 25 backend engineers. Constraint: Mention scheduled downtime of 20 minutes on Saturday at 2 AM UTC.',
         quizQuestions: [
@@ -183,14 +223,16 @@ Instead of *"Write a marketing post for our app,"* use:
         summary: 'Enforce machine-readable schemas, markdown tables, JSON objects, and exact delimiters.',
         orderIndex: 5,
         content: `### Enforcing Structured Outputs
-LLM outputs are frequently consumed by downstream software. You must enforce strict schema contracts.
+Instead of letting the AI write walls of continuous text, you can tell it to organize its response into clean, predictable formats like checklists, comparison tables, or spreadsheet-ready data.
+
+LLM outputs are frequently consumed by downstream software or directly pasted into reports. You must enforce strict schema contracts.
 
 #### Standard Schema Techniques:
 * **JSON Schema Enforcement**: Specify keys, types, and require pure JSON without backtick fences if needed.
 * **Markdown Tables**: Request explicit column headers.
 * **Numbered Lists**: Mandate strict item counts.
 
-#### Robust JSON Prompt Example:
+#### Example 1: Developer JSON Payload
 \`\`\`text
 Analyze the given customer review.
 Return ONLY a valid JSON object matching this schema:
@@ -200,7 +242,17 @@ Return ONLY a valid JSON object matching this schema:
   "topics": string[]
 }
 Do not include any introductory remarks or explanations outside the JSON.
-\`\`\``,
+\`\`\`
+
+#### Example 2: Event Budget & Supplies (Markdown Table)
+\`\`\`text
+Prompt: "I am hosting a 10-person backyard birthday barbecue on a $150 budget.
+Format your recommendation as a markdown table with 4 columns:
+Item | Estimated Quantity | Estimated Cost | Preparation Notes
+Add a final row at the bottom with Total Estimated Budget."
+\`\`\`
+
+> **Why This Matters**: Specifying the output format means you can copy and paste answers directly into your emails, spreadsheets, or apps without spending 10 minutes reformatting messy text.`,
         practiceGoal: 'Write a prompt asking the AI to parse an event invitation and return a strict JSON payload with title, date, time, and rsvpLink.',
         practicePrompt: `Extract the details from the email below into a valid JSON object with keys: "eventName", "date", "startTime", "location", and "organizerEmail". Return ONLY the raw JSON object without markdown formatting.
 
@@ -225,13 +277,25 @@ Email: "Hey team, join us for the Q3 Hackathon on October 14th starting at 9:00 
         summary: 'Diagnose and avoid prompt overloading, vague verbs, implicit assumptions, and negative trap loops.',
         orderIndex: 6,
         content: `### The 5 Most Frequent Traps
+When learning to prompt, the biggest pitfall is treating the AI like a magic mind-reader instead of a fast pattern-follower that needs one clear job at a time.
+
 1. **The "Do Not" Trap (Negative Constraints)**:
    * *Trap*: "Don't mention prices." (The word "price" activates price-related tokens).
    * *Fix*: "Focus exclusively on product durability and ergonomic features." (Tell it what to do, not just what to avoid).
 2. **Prompt Overloading**: Cramming 10 unrelated tasks into a single run instead of chaining.
 3. **Vague Verbs**: Using "Process this" or "Look over this" instead of "Synthesize", "Extract", or "Audit".
 4. **Missing Negative Examples**: Not clarifying boundaries on ambiguous classification tasks.
-5. **Assuming LLMs Have State**: Forgetting that each API call is stateless unless prior conversation turns are fed back.`,
+5. **Assuming LLMs Have State**: Forgetting that each API call is stateless unless prior conversation turns are fed back.
+
+#### Example 1: General Product Copy (Negative Trap vs Fix)
+* **Bad**: \`Write an ad for running shoes. Don't mention competitive brands, don't talk about cost, and don't make it sound cheesy.\`
+* **Good**: \`Write a 50-word energetic ad for marathon running shoes. Highlight our proprietary carbon-plate cushioning and breathable recycled mesh fabric.\`
+
+#### Example 2: Customer Care Reply (Complaint Email)
+* **Bad**: \`Write a reply to an angry customer whose package arrived late. Don't be rude, don't mention refunds, and don't make excuses.\` *(The words 'rude', 'refunds', and 'excuses' prime defensive vocabulary)*
+* **Good**: \`Write an empathetic 3-paragraph customer care reply for a late package. Acknowledge the delay warmly, confirm that their replacement item has shipped with tracking number PM-9921, and offer a $15 gift card for their next purchase.\` *(Focuses strictly on the exact positive actions to take)*
+
+> **Why This Matters**: Telling the AI exactly what *to* do instead of what *not* to do prevents confusing misunderstandings and delivers ready-to-use responses on the very first try.`,
         practiceGoal: 'Refactor a bad overloaded prompt into a clean, disciplined single-objective prompt.',
         practicePrompt: 'Rewrite this poor prompt: "Look at this article and tell me if its good or bad, also rewrite it for kids, and also extract the dates, and don\'t make it boring." -> Create a clean, prioritized, well-structured instruction.',
         quizQuestions: [

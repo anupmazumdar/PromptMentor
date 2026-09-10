@@ -11,7 +11,7 @@ export async function getUserProgress(req: Request, res: Response): Promise<void
       return;
     }
 
-    if (isDbConnected && prisma) {
+    if (isDbConnected && prisma && !userId.startsWith('guest_')) {
       const user = await prisma.user.findUnique({
         where: { id: userId },
         include: {
@@ -172,7 +172,7 @@ export async function submitQuiz(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    if (isDbConnected && prisma) {
+    if (isDbConnected && prisma && !userId.startsWith('guest_')) {
       const lesson = await prisma.lesson.findUnique({
         where: { slug: lessonSlug },
         include: {
@@ -306,7 +306,7 @@ export async function getUserAttempts(req: Request, res: Response): Promise<void
       return;
     }
 
-    if (isDbConnected && prisma) {
+    if (isDbConnected && prisma && !userId.startsWith('guest_')) {
       const attempts = await prisma.promptAttempt.findMany({
         where: { userId },
         orderBy: { createdAt: 'desc' },

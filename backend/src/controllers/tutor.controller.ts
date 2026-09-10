@@ -39,8 +39,8 @@ export async function handleSandboxCritique(req: Request, res: Response): Promis
       practiceGoal || 'Create a robust prompt'
     );
 
-    // Persist attempt
-    if (isDbConnected && prisma && req.user?.userId) {
+    // Persist attempt (guests stay strictly in-memory)
+    if (isDbConnected && prisma && req.user?.userId && !req.user.userId.startsWith('guest_')) {
       try {
         await prisma.promptAttempt.create({
           data: {

@@ -56,8 +56,13 @@ export async function apiRequest<T = any>(endpoint: string, options: RequestOpti
 
     if (!refreshToken) {
       localStorage.removeItem('pm_access_token');
+      localStorage.removeItem('pm_refresh_token');
       localStorage.removeItem('pm_user');
-      return response.json();
+      let errBody: any;
+      try {
+        errBody = await response.json();
+      } catch (_) {}
+      throw new Error(errBody?.error || 'Authentication required. Please log in.');
     }
 
     if (!isRefreshing) {
