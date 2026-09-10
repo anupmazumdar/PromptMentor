@@ -12,8 +12,11 @@ export const corsOptions: CorsOptions = {
     // Allow non-browser requests (e.g. curl, server-to-server, mobile or keep-alive pings)
     if (!origin) return callback(null, true);
 
-    // Automatically allow all Vercel deployment domains, localhost, or configured FRONTEND_URL
+    // Automatically allow custom domain (*.anupmazumdar.me), Vercel deployments, localhost, or configured FRONTEND_URL
     if (
+      origin.endsWith('.anupmazumdar.me') ||
+      origin.includes('anupmazumdar.me') ||
+      origin.includes('promptmentor') ||
       origin.endsWith('.vercel.app') ||
       allowedOrigins.some((allowed) => allowed === origin || (allowed.includes('*') && origin.endsWith(allowed.replace('*', ''))))
     ) {
@@ -25,7 +28,7 @@ export const corsOptions: CorsOptions = {
       return callback(null, true);
     }
 
-    return callback(new Error(`Origin ${origin} not allowed by CORS policy`));
+    return callback(null, false);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
