@@ -1,30 +1,21 @@
 import cors, { CorsOptions } from 'cors';
 
-const allowedOrigins = [
+const allowedOrigins: string[] = [
+  'https://promptmentor.anupmazumdar.me',
+  'https://prompt-mentor-one.vercel.app',
   'http://localhost:5173',
-  'http://localhost:3000',
   'http://127.0.0.1:5173',
-  process.env.FRONTEND_URL || ''
+  'http://localhost:3000',
+  ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL.trim().replace(/\/$/, '')] : [])
 ].filter(Boolean);
 
 export const corsOptions: CorsOptions = {
   origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-    // Allow non-browser requests (e.g. curl, server-to-server, mobile or keep-alive pings)
+    // Allow non-browser requests (e.g. curl, server-to-server, health checks or keep-alive pings)
     if (!origin) return callback(null, true);
 
-    // Automatically allow custom domain (*.anupmazumdar.me), Vercel deployments, localhost, or configured FRONTEND_URL
-    if (
-      origin.endsWith('.anupmazumdar.me') ||
-      origin.includes('anupmazumdar.me') ||
-      origin.includes('promptmentor') ||
-      origin.endsWith('.vercel.app') ||
-      allowedOrigins.some((allowed) => allowed === origin || (allowed.includes('*') && origin.endsWith(allowed.replace('*', ''))))
-    ) {
-      return callback(null, true);
-    }
-
-    // In non-production or if FRONTEND_URL is not strictly set, allow for development ease
-    if (process.env.NODE_ENV !== 'production' || !process.env.FRONTEND_URL) {
+    // Strict exact match against explicit allowlist (no substring or wildcard matching)
+    if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
 

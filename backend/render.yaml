@@ -15,9 +15,9 @@ services:
       - key: DATABASE_URL
         sync: false
       - key: JWT_ACCESS_SECRET
-        generateValue: true
+        generateValue: true # Required: Server fails at boot if missing
       - key: JWT_REFRESH_SECRET
-        generateValue: true
+        generateValue: true # Required: Server fails at boot if missing
       - key: OPENROUTER_API_KEY
         sync: false
       - key: OPENROUTER_MODEL

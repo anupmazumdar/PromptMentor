@@ -5,9 +5,25 @@ export interface TokenPayload {
   email: string;
   role: string;
 }
+import dotenv from 'dotenv';
 
-const JWT_ACCESS_SECRET: Secret = process.env.JWT_ACCESS_SECRET || 'promptmentor_super_secret_access_key_123';
-const JWT_REFRESH_SECRET: Secret = process.env.JWT_REFRESH_SECRET || 'promptmentor_super_secret_refresh_key_456';
+// Load environment variables if running independently or before server.ts
+dotenv.config();
+
+function getRequiredJwtSecret(varName: 'JWT_ACCESS_SECRET' | 'JWT_REFRESH_SECRET'): Secret {
+  const secret = process.env[varName];
+  if (!secret || typeof secret !== 'string' || secret.trim().length === 0) {
+    throw new Error(
+      `[FATAL CONFIG ERROR] Missing required environment variable: ${varName}. ` +
+      `PromptMentor requires secure, non-empty secret keys for JWT authentication. ` +
+      `Please set ${varName} in your environment or .env file before starting the server.`
+    );
+  }
+  return secret;
+}
+
+const JWT_ACCESS_SECRET: Secret = getRequiredJwtSecret('JWT_ACCESS_SECRET');
+const JWT_REFRESH_SECRET: Secret = getRequiredJwtSecret('JWT_REFRESH_SECRET');
 
 const ACCESS_TOKEN_EXPIRY = '15m';
 const REFRESH_TOKEN_EXPIRY = '7d';

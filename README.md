@@ -248,6 +248,7 @@ Create `.env` files in `backend/` and `frontend/` using the provided `.env.examp
 ```ini
 PORT=5000
 NODE_ENV=development
+# MANDATORY: Must be set before starting the backend (server fails at boot if missing)
 JWT_ACCESS_SECRET=your_jwt_access_secret_here
 JWT_REFRESH_SECRET=your_jwt_refresh_secret_here
 OPENROUTER_API_KEY=your_openrouter_key_here
@@ -294,7 +295,15 @@ npm run dev
    ```bash
    npm run start
    ```
-5. Configure Environment Variables (`NODE_ENV=production`, `PORT=10000`, `DATABASE_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `OPENROUTER_API_KEY`, `FRONTEND_URL`, `RENDER_EXTERNAL_URL`).
+5. Configure Environment Variables:
+   - `NODE_ENV=production`
+   - `PORT=10000`
+   - `JWT_ACCESS_SECRET`: *(Mandatory 32+ char secret - server fails at boot if missing)*
+   - `JWT_REFRESH_SECRET`: *(Mandatory 32+ char secret - server fails at boot if missing)*
+   - `OPENROUTER_API_KEY`: *(Your OpenRouter API key)*
+   - `DATABASE_URL`: *(PostgreSQL connection string)*
+   - `FRONTEND_URL`: `https://promptmentor.anupmazumdar.me`
+   - `RENDER_EXTERNAL_URL`: `https://promptmentor.onrender.com`
 6. Set **Health Check Path** to `/api/health`.
 
 ---
