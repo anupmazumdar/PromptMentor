@@ -40,6 +40,11 @@ export const LoginPage: React.FC = () => {
     setPassword('prompt123');
   };
 
+  const fillAdminAccount = () => {
+    setEmail('admin@promptmentor.com');
+    setPassword('Admin@PromptMentor2026!');
+  };
+
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md space-y-6">
@@ -124,13 +129,21 @@ export const LoginPage: React.FC = () => {
           </form>
 
           {/* Quick Demo Fill */}
-          <div className="mt-5 pt-5 border-t border-slate-800 text-center">
+          <div className="mt-5 pt-5 border-t border-slate-800 text-center flex items-center justify-center gap-3">
             <button
               type="button"
               onClick={fillDemoAccount}
               className="text-xs text-violet-400 hover:text-violet-300 font-medium inline-flex items-center gap-1"
             >
-              <Sparkles className="w-3.5 h-3.5" /> Fill Demo Credentials
+              <Sparkles className="w-3.5 h-3.5" /> Fill Student Demo
+            </button>
+            <span className="text-slate-600">•</span>
+            <button
+              type="button"
+              onClick={fillAdminAccount}
+              className="text-xs text-cyan-400 hover:text-cyan-300 font-medium inline-flex items-center gap-1"
+            >
+              <Sparkles className="w-3.5 h-3.5" /> Fill Admin Demo
             </button>
           </div>
         </div>

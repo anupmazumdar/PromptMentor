@@ -40,7 +40,15 @@ export async function apiRequest<T = any>(endpoint: string, options: RequestOpti
     headers
   };
 
-  let response = await fetch(url, config);
+  let response: Response;
+  try {
+    response = await fetch(url, config);
+  } catch (err: any) {
+    if (!BASE_URL) {
+      throw new Error('Backend URL (VITE_API_URL) is not configured in Vercel. Please add VITE_API_URL in Vercel Settings and Redeploy.');
+    }
+    throw new Error(`Cannot reach backend at ${BASE_URL}. If hosted on Render free-tier, the server may be waking from cold sleep (~45s). Please wait a few seconds and try again.`);
+  }
 
   // If 401 and not an auth route, attempt token refresh
   if (response.status === 401 && !endpoint.startsWith('/api/auth/login') && !endpoint.startsWith('/api/auth/refresh')) {
@@ -98,9 +106,18 @@ export async function apiRequest<T = any>(endpoint: string, options: RequestOpti
     }
   }
 
-  const data = await response.json();
-  if (!response.ok && !data.success) {
-    throw new Error(data.error || `HTTP ${response.status} Request Failed`);
+  let data: any;
+  try {
+    data = await response.json();
+  } catch (err) {
+    if (!response.ok) {
+      throw new Error(`Server returned HTTP ${response.status}: ${response.statusText}`);
+    }
+    throw new Error('Unexpected non-JSON response from API');
+  }
+
+  if (!response.ok && !data?.success) {
+    throw new Error(data?.error || `HTTP ${response.status} Request Failed`);
   }
 
   return data;

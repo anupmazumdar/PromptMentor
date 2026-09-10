@@ -43,7 +43,32 @@ export interface MemoryAttempt {
 }
 
 export const memoryStore = {
-  users: new Map<string, MemoryUser>(),
+  users: new Map<string, MemoryUser>([
+    [
+      'admin@promptmentor.com',
+      {
+        id: 'user_admin_default',
+        email: 'admin@promptmentor.com',
+        passwordHash: '$2b$10$Tvzob8SyOaaLGx5CXQYgD.uQ/r11J5kxhsneQBoyXU9dDvH5dwMSG', // Admin@PromptMentor2026!
+        name: 'Admin Mentor',
+        role: 'ADMIN',
+        currentLevel: 'ADVANCED',
+        createdAt: new Date()
+      }
+    ],
+    [
+      'student@promptmentor.ai',
+      {
+        id: 'user_student_demo',
+        email: 'student@promptmentor.ai',
+        passwordHash: '$2b$10$nJxs.1EDGxxDAhRjLbL9nOq6dovFzHXDu1.ThCOXEXBzBEVBiDRVG', // prompt123
+        name: 'Demo Student',
+        role: 'STUDENT',
+        currentLevel: 'BASICS',
+        createdAt: new Date()
+      }
+    ]
+  ]),
   progress: new Map<string, MemoryProgress>(),
   attempts: [] as MemoryAttempt[],
   curriculum: curriculumData

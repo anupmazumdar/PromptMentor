@@ -83,7 +83,33 @@ export async function seedCurriculum() {
     }
   }
 
-  console.log('✅ Curriculum seeding completed successfully with 20 lessons and interactive quizzes!');
+  // Upsert Default Admin User
+  await prisma.user.upsert({
+    where: { email: 'admin@promptmentor.com' },
+    update: {},
+    create: {
+      email: 'admin@promptmentor.com',
+      passwordHash: '$2b$10$Tvzob8SyOaaLGx5CXQYgD.uQ/r11J5kxhsneQBoyXU9dDvH5dwMSG', // Admin@PromptMentor2026!
+      name: 'Admin Mentor',
+      role: 'ADMIN',
+      currentLevel: 'ADVANCED'
+    }
+  });
+
+  // Upsert Default Demo Student User
+  await prisma.user.upsert({
+    where: { email: 'student@promptmentor.ai' },
+    update: {},
+    create: {
+      email: 'student@promptmentor.ai',
+      passwordHash: '$2b$10$nJxs.1EDGxxDAhRjLbL9nOq6dovFzHXDu1.ThCOXEXBzBEVBiDRVG', // prompt123
+      name: 'Demo Student',
+      role: 'STUDENT',
+      currentLevel: 'BASICS'
+    }
+  });
+
+  console.log('✅ Curriculum & default accounts (admin & demo student) seeded successfully!');
   await prisma.$disconnect();
 }
 

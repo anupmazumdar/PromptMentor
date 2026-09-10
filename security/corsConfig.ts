@@ -12,12 +12,16 @@ export const corsOptions: CorsOptions = {
     // Allow non-browser requests (e.g. curl, server-to-server, mobile or keep-alive pings)
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.some((allowed) => allowed === origin || (allowed.includes('*') && origin.endsWith(allowed.replace('*', ''))))) {
+    // Automatically allow all Vercel deployment domains, localhost, or configured FRONTEND_URL
+    if (
+      origin.endsWith('.vercel.app') ||
+      allowedOrigins.some((allowed) => allowed === origin || (allowed.includes('*') && origin.endsWith(allowed.replace('*', ''))))
+    ) {
       return callback(null, true);
     }
 
     // In non-production or if FRONTEND_URL is not strictly set, allow for development ease
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== 'production' || !process.env.FRONTEND_URL) {
       return callback(null, true);
     }
 
