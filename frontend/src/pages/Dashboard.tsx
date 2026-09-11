@@ -133,9 +133,9 @@ export const Dashboard: React.FC = () => {
                   <Link
                     key={les.id || idx}
                     to={`/curriculum/basics?lesson=${les.slug}`}
-                    className="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/40 hover:bg-slate-900 border border-slate-900 text-xs transition-colors min-h-[38px]"
+                    className="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/40 hover:bg-slate-900 border border-slate-900 text-xs transition-colors min-h-[38px] gap-2 min-w-0"
                   >
-                    <span className="truncate text-slate-300 max-w-[200px]">{les.title}</span>
+                    <span className="truncate text-slate-300 min-w-0 flex-1">{les.title}</span>
                     {les.quizPassed ? (
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                     ) : (
@@ -165,7 +165,7 @@ export const Dashboard: React.FC = () => {
                 <span className="text-xs text-cyan-400 font-mono">7 Lessons</span>
               </div>
               <h3 className="font-bold text-base text-white mb-1">Intermediate</h3>
-              <p className="text-xs text-slate-400 mb-4">
+              <p className="text-xs text-slate-400 mb-4 break-words">
                 Chain-of-thought, prompt chaining, parameters, XML delimiters & anti-hallucination.
               </p>
 
@@ -173,9 +173,9 @@ export const Dashboard: React.FC = () => {
                 {interModule?.lessons.slice(0, 4).map((les, idx) => (
                   <div
                     key={les.id || idx}
-                    className="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/40 border border-slate-900 text-xs text-slate-400 min-h-[38px]"
+                    className="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/40 border border-slate-900 text-xs text-slate-400 min-h-[38px] gap-2 min-w-0"
                   >
-                    <span className="truncate max-w-[200px]">{les.title}</span>
+                    <span className="truncate min-w-0 flex-1">{les.title}</span>
                     {les.quizPassed ? (
                       <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
                     ) : progress?.tiers?.intermediate?.unlocked ? (
@@ -207,7 +207,7 @@ export const Dashboard: React.FC = () => {
                 <span className="text-xs text-violet-400 font-mono">7 Lessons</span>
               </div>
               <h3 className="font-bold text-base text-white mb-1">Advanced</h3>
-              <p className="text-xs text-slate-400 mb-4">
+              <p className="text-xs text-slate-400 mb-4 break-words">
                 ReAct, RAG architectures, tool-use schemas, injection defenses & multi-agent systems.
               </p>
 
@@ -215,9 +215,9 @@ export const Dashboard: React.FC = () => {
                 {advModule?.lessons.slice(0, 4).map((les, idx) => (
                   <div
                     key={les.id || idx}
-                    className="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/40 border border-slate-900 text-xs text-slate-400 min-h-[38px]"
+                    className="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/40 border border-slate-900 text-xs text-slate-400 min-h-[38px] gap-2 min-w-0"
                   >
-                    <span className="truncate max-w-[200px]">{les.title}</span>
+                    <span className="truncate min-w-0 flex-1">{les.title}</span>
                     {progress?.tiers?.advanced?.unlocked ? (
                       <ArrowRight className="w-3 h-3 text-slate-500 shrink-0" />
                     ) : (
@@ -253,14 +253,14 @@ export const Dashboard: React.FC = () => {
 
           <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,260px),360px))] gap-6 justify-center">
             {recentAttempts.slice(0, 3).map((att) => (
-              <div key={att.id} className="glass-card p-5 border-slate-800 space-y-2 flex flex-col justify-between">
+              <div key={att.id} className="glass-card p-5 border-slate-800 space-y-2 flex flex-col justify-between min-w-0">
                 <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-slate-200 truncate max-w-[180px]">
+                  <div className="flex items-center justify-between mb-1 gap-2 min-w-0">
+                    <span className="text-xs font-bold text-slate-200 truncate min-w-0 flex-1">
                       {att.taskTitle}
                     </span>
                     <span
-                      className={`text-xs font-mono font-bold px-2 py-0.5 rounded-full ${
+                      className={`text-xs font-mono font-bold px-2 py-0.5 rounded-full shrink-0 ${
                         att.score >= 80
                           ? 'bg-emerald-500/20 text-emerald-400'
                           : att.score >= 60
@@ -271,7 +271,7 @@ export const Dashboard: React.FC = () => {
                       {att.score}/100
                     </span>
                   </div>
-                  <p className="text-xs text-slate-400 line-clamp-2 font-mono bg-slate-950/60 p-2.5 rounded-xl border border-slate-900">
+                  <p className="text-xs text-slate-400 line-clamp-2 font-mono bg-slate-950/60 p-2.5 rounded-xl border border-slate-900 break-words">
                     "{att.studentPrompt}"
                   </p>
                 </div>

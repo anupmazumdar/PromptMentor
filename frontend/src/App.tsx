@@ -33,12 +33,12 @@ export const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#080C14] text-slate-100 selection:bg-violet-600 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-[#080C14] text-slate-100 selection:bg-violet-600 selection:text-white overflow-x-hidden">
       {/* Ephemeral Memory Storage Banner */}
       {isMemoryFallback && (
         <div className="bg-amber-950/80 border-b border-amber-800/70 px-4 py-1.5 text-center text-xs text-amber-200 flex items-center justify-center gap-2">
           <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-          <span>
+          <span className="break-words">
             <strong>Demo Notice:</strong> Server is running in memory fallback mode (no PostgreSQL database connected). Accounts and progress will not persist across restarts.
           </span>
         </div>
@@ -51,7 +51,7 @@ export const App: React.FC = () => {
       <TutorChat />
 
       {/* Main Page Routing */}
-      <main className="flex-1 pb-12">
+      <main className="flex-1 pb-12 min-w-0">
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />

@@ -135,11 +135,11 @@ export const QuizModal: React.FC<QuizModalProps> = ({
           {quizQuestions.map((q, qIdx) => {
             const resultItem = quizResult?.results?.[qIdx];
             return (
-              <div key={q.id || qIdx} className="space-y-3 p-4 rounded-xl bg-slate-950/40 border border-slate-800/80">
-                <div className="flex items-start justify-between">
-                  <h4 className="text-sm font-semibold text-slate-100 flex items-start gap-2">
-                    <span className="text-violet-400 font-mono text-xs mt-0.5">Q{qIdx + 1}.</span>
-                    <span>{q.question}</span>
+              <div key={q.id || qIdx} className="space-y-3 p-4 rounded-xl bg-slate-950/40 border border-slate-800/80 min-w-0">
+                <div className="flex items-start justify-between gap-2">
+                  <h4 className="text-sm font-semibold text-slate-100 flex items-start gap-2 min-w-0 flex-1">
+                    <span className="text-violet-400 font-mono text-xs mt-0.5 shrink-0">Q{qIdx + 1}.</span>
+                    <span className="min-w-0 flex-1 break-words">{q.question}</span>
                   </h4>
                   {resultItem && (
                     <span className="shrink-0 ml-2">
@@ -153,7 +153,7 @@ export const QuizModal: React.FC<QuizModalProps> = ({
                 </div>
 
                 {/* Options */}
-                <div className="space-y-2">
+                <div className="space-y-2 min-w-0">
                   {q.options.map((opt, optIdx) => {
                     const isSelected = selectedAnswers[qIdx] === optIdx;
                     let optionStyle = 'border-slate-800 bg-slate-900/40 text-slate-300 hover:border-slate-700';
@@ -175,9 +175,9 @@ export const QuizModal: React.FC<QuizModalProps> = ({
                         key={optIdx}
                         type="button"
                         onClick={() => handleSelect(qIdx, optIdx)}
-                        className={`w-full text-left p-3 rounded-xl border text-xs leading-relaxed transition-all flex items-center justify-between ${optionStyle}`}
+                        className={`w-full text-left p-3 rounded-xl border text-xs leading-relaxed transition-all flex items-center justify-between gap-2.5 min-w-0 ${optionStyle}`}
                       >
-                        <span>{opt}</span>
+                        <span className="min-w-0 flex-1 break-words">{opt}</span>
                         <span
                           className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ml-2 text-[9px] ${
                             isSelected
@@ -194,9 +194,9 @@ export const QuizModal: React.FC<QuizModalProps> = ({
 
                 {/* Explanation if submitted */}
                 {resultItem && (
-                  <div className="mt-2 p-3 rounded-lg bg-slate-900/80 border border-slate-800 text-xs text-slate-300">
+                  <div className="mt-2 p-3 rounded-lg bg-slate-900/80 border border-slate-800 text-xs text-slate-300 min-w-0 break-words">
                     <span className="font-bold text-violet-400 block mb-1">Explanation:</span>
-                    <p className="leading-relaxed">{resultItem.explanation || q.explanation}</p>
+                    <p className="leading-relaxed break-words">{resultItem.explanation || q.explanation}</p>
                   </div>
                 )}
               </div>

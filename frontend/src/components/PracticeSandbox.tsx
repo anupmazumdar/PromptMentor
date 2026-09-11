@@ -210,11 +210,11 @@ export const PracticeSandbox: React.FC<PracticeSandboxProps> = ({
               </div>
 
               {/* Goal Box */}
-              <div className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 flex items-start gap-2.5">
+              <div className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 flex items-start gap-2.5 min-w-0">
                 <Lightbulb className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider block">Target Objective:</span>
-                  <p className="text-xs text-slate-300 mt-0.5 leading-relaxed">{practiceGoal}</p>
+                  <p className="text-xs text-slate-300 mt-0.5 leading-relaxed break-words">{practiceGoal}</p>
                 </div>
               </div>
             </div>
@@ -342,27 +342,27 @@ export const PracticeSandbox: React.FC<PracticeSandboxProps> = ({
             )}
 
             {!isLoading && critique && (
-              <div className="space-y-4 animate-in fade-in duration-300">
+              <div className="space-y-4 animate-in fade-in duration-300 min-w-0">
                 {/* Score banner */}
-                <div className="flex items-center justify-between p-4 rounded-xl bg-slate-950/60 border border-slate-800/80">
-                  <div>
+                <div className="flex items-center justify-between p-4 rounded-xl bg-slate-950/60 border border-slate-800/80 gap-3 min-w-0">
+                  <div className="min-w-0 flex-1">
                     <span className="text-[11px] text-slate-400 uppercase tracking-wider block font-mono">Total Score</span>
-                    <p className="text-xs text-slate-300 mt-0.5">{critique.levelFeedback}</p>
+                    <p className="text-xs text-slate-300 mt-0.5 break-words">{critique.levelFeedback}</p>
                   </div>
-                  <div className={`px-4 py-2 rounded-xl border font-mono font-extrabold text-2xl ${getScoreColor(critique.score)}`}>
+                  <div className={`px-4 py-2 rounded-xl border font-mono font-extrabold text-2xl shrink-0 ${getScoreColor(critique.score)}`}>
                     {critique.score}
                     <span className="text-xs font-normal opacity-70">/100</span>
                   </div>
                 </div>
 
                 {/* Strengths */}
-                <div className="space-y-1.5">
+                <div className="space-y-1.5 min-w-0">
                   <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5 shrink-0" /> Strengths
                   </span>
-                  <ul className="space-y-1">
+                  <ul className="space-y-1 min-w-0">
                     {critique.strengths.map((s, i) => (
-                      <li key={i} className="text-xs text-slate-300 bg-slate-950/40 border border-slate-900 p-2.5 rounded-lg leading-relaxed">
+                      <li key={i} className="text-xs text-slate-300 bg-slate-950/40 border border-slate-900 p-2.5 rounded-lg leading-relaxed break-words">
                         • {s}
                       </li>
                     ))}
@@ -370,13 +370,13 @@ export const PracticeSandbox: React.FC<PracticeSandboxProps> = ({
                 </div>
 
                 {/* Improvements */}
-                <div className="space-y-1.5">
+                <div className="space-y-1.5 min-w-0">
                   <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
                     <AlertCircle className="w-3.5 h-3.5 shrink-0" /> Specific Improvements
                   </span>
-                  <ul className="space-y-1">
+                  <ul className="space-y-1 min-w-0">
                     {critique.improvements.map((imp, i) => (
-                      <li key={i} className="text-xs text-slate-300 bg-slate-950/40 border border-slate-900 p-2.5 rounded-lg leading-relaxed">
+                      <li key={i} className="text-xs text-slate-300 bg-slate-950/40 border border-slate-900 p-2.5 rounded-lg leading-relaxed break-words">
                         • {imp}
                       </li>
                     ))}
@@ -384,12 +384,12 @@ export const PracticeSandbox: React.FC<PracticeSandboxProps> = ({
                 </div>
 
                 {/* Optimized Prompt */}
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-violet-400 flex items-center gap-1.5">
+                <div className="space-y-1.5 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-bold text-violet-400 flex items-center gap-1.5 shrink-0">
                       <Sparkles className="w-3.5 h-3.5 shrink-0" /> AI Optimized Rewrite
                     </span>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 shrink-0">
                       <button
                         onClick={() => setStudentPrompt(critique.optimizedPrompt)}
                         className="text-[11px] text-violet-400 hover:text-violet-300 min-h-[32px] px-2"
@@ -409,7 +409,7 @@ export const PracticeSandbox: React.FC<PracticeSandboxProps> = ({
                       </button>
                     </div>
                   </div>
-                  <div className="p-3.5 rounded-xl bg-slate-950 border border-violet-500/20 text-xs font-mono text-slate-200 max-h-48 overflow-y-auto whitespace-pre-wrap leading-relaxed">
+                  <div className="p-3.5 rounded-xl bg-slate-950 border border-violet-500/20 text-xs font-mono text-slate-200 max-h-48 overflow-y-auto whitespace-pre-wrap break-words leading-relaxed min-w-0">
                     {critique.optimizedPrompt}
                   </div>
                 </div>

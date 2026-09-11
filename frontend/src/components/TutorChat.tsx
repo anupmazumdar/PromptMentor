@@ -17,7 +17,7 @@ import {
   WifiOff,
   Clock
 } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import { MarkdownRenderer } from './MarkdownRenderer';
 
 export const TutorChat: React.FC = () => {
   const { isTutorOpen, closeTutor, tutorLevel, tutorTopic } = useProgress();
@@ -232,9 +232,9 @@ I'll teach you with:
           {messages.map((m) => {
             const isUser = m.role === 'user';
             return (
-              <div key={m.id} className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
+              <div key={m.id} className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} min-w-0`}>
                 <div
-                  className={`max-w-[90%] rounded-2xl p-4 text-sm leading-relaxed ${
+                  className={`max-w-[92%] sm:max-w-[85%] rounded-2xl p-4 text-sm leading-relaxed min-w-0 break-words ${
                     isUser
                       ? 'bg-violet-600 text-white rounded-br-xs shadow-md'
                       : m.id.startsWith('offline-')
@@ -243,11 +243,9 @@ I'll teach you with:
                   }`}
                 >
                   {isUser ? (
-                    <p className="whitespace-pre-wrap">{m.content}</p>
+                    <p className="whitespace-pre-wrap break-words">{m.content}</p>
                   ) : (
-                    <div className="prose prose-invert prose-xs max-w-none space-y-2">
-                      <ReactMarkdown>{m.content}</ReactMarkdown>
-                    </div>
+                    <MarkdownRenderer content={m.content} themeColor="violet" className="text-xs space-y-2" />
                   )}
 
                   {!isUser && m.id !== 'welcome' && !m.id.startsWith('offline-') && (

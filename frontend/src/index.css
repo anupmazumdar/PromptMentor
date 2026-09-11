@@ -98,6 +98,94 @@
   .gradient-text {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-cyan-400 to-emerald-400;
   }
+
+  /* Rich Markdown Content Styling with responsive text wrapping */
+  .prose-mentor {
+    @apply text-slate-200 text-sm leading-relaxed;
+  }
+
+  .prose-mentor h1,
+  .prose-mentor h2,
+  .prose-mentor h3,
+  .prose-mentor h4,
+  .prose-mentor h5,
+  .prose-mentor h6 {
+    @apply text-white font-bold tracking-tight break-words;
+  }
+
+  .prose-mentor h1 {
+    @apply text-2xl mt-6 mb-3;
+  }
+
+  .prose-mentor h2 {
+    @apply text-xl mt-5 mb-2.5;
+  }
+
+  .prose-mentor h3 {
+    @apply text-lg mt-4 mb-2;
+  }
+
+  .prose-mentor h4 {
+    @apply text-base mt-3.5 mb-1.5 font-semibold text-slate-200;
+  }
+
+  .prose-mentor p {
+    @apply my-3 leading-relaxed break-words;
+  }
+
+  .prose-mentor ul {
+    @apply list-disc list-outside ml-5 space-y-1.5 my-3 break-words;
+  }
+
+  .prose-mentor ol {
+    @apply list-decimal list-outside ml-5 space-y-1.5 my-3 break-words;
+  }
+
+  .prose-mentor li {
+    @apply leading-relaxed break-words text-slate-300;
+  }
+
+  .prose-mentor strong {
+    @apply text-white font-semibold;
+  }
+
+  .prose-mentor em {
+    @apply text-slate-200 italic;
+  }
+
+  .prose-mentor blockquote {
+    @apply border-l-4 pl-4 py-2 my-4 rounded-r-xl italic text-slate-300 break-words;
+  }
+
+  .prose-mentor-emerald blockquote {
+    @apply border-emerald-500/60 bg-emerald-950/20 text-emerald-100/90;
+  }
+
+  .prose-mentor-cyan blockquote {
+    @apply border-cyan-500/60 bg-cyan-950/20 text-cyan-100/90;
+  }
+
+  .prose-mentor-violet blockquote {
+    @apply border-violet-500/60 bg-violet-950/20 text-violet-100/90;
+  }
+}
+
+/* Global text wrapping & code block rules - guarantees code and prompts wrap without clipping */
+pre {
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+code {
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+:not(pre) > code {
+  white-space: pre-wrap !important;
 }
 
 /* Custom scrollbars */
